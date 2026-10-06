@@ -1,0 +1,16 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# 1. Dépendances : cette couche ne change que si requirements.txt change
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+# 2. Données d'exemple : changent rarement
+COPY data/sample.csv data/sample.csv
+
+# 3. Code : change souvent, donc en dernier
+COPY src/ src/
+
+ENTRYPOINT ["python", "-m", "src.predict"]
+CMD ["--input", "data/sample.csv"]
